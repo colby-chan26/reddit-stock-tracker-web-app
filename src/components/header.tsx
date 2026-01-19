@@ -1,5 +1,5 @@
 'use client';
-import { GithubIcon, InfoIcon } from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ModeToggle } from './mode-toggle';
 
 const Separator = () => (
   <div className='inline-block mx-3 my-2 w-0.5 self-stretch bg-neutral-100 dark:bg-white/10' />
@@ -75,6 +76,8 @@ export const Header = () => {
           <Link href=''>
             <InfoIcon width='25' height='25' />
           </Link>
+          <Separator />
+          <ModeToggle />
         </div>
       </div>
     </header>
