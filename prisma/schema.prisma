@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model stocks {
+  id            Int              @id @default(autoincrement())
+  submission_id String?          @db.VarChar(30)
+  ticker        String?          @db.Char(5)
+  author        String?          @db.VarChar(30)
+  subreddit     String?          @db.VarChar(30)
+  score         Int?             @db.SmallInt
+  type          submission_type?
+  created_utc   DateTime?        @db.Timestamptz(6)
+}
+
+enum submission_type {
+  POST
+  COMMENT
+  REPLY
+}

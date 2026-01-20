@@ -23,15 +23,17 @@ export const Header = () => {
       <div className='lg:px-40 md:px-20 sm:px-5 py-2.5 flex flex-row w-full'>
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
-            <NavigationMenuItem asChild>
-              <NavigationMenuLink>
-                <Image
-                  src='/file.svg'
-                  alt='logo'
-                  priority
-                  width={25}
-                  height={25}
-                />
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link href='/'>
+                  <Image
+                    src='/file.svg'
+                    alt='logo'
+                    priority
+                    width={25}
+                    height={25}
+                  />
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
