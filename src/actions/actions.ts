@@ -1,23 +1,11 @@
-'use server'
+'use server';
 
-import prisma from "@/lib/prisma";
+import { unstable_cache } from 'next/cache';
+import { getTopMentionedTickers } from './leaderboards';
 
-export async function getTopMentionedTickers() {
-  const aggregations = await prisma.stocks.groupBy({
-    by: ['ticker'],
-    _sum: {
-      score: true
-    },
-    _min: {
-      created_utc: true
-    },
-    orderBy: {
-      _sum: {
-        score: 'desc'
-      }
-    },
-    take: 10,
-  });
+export const getTopMentionedTickersAllTimeCached = unstable_cache(
+  getTopMentionedTickers,
+  ['leaderboards'],
+  { revalidate: 86400 },
+);
 
-  return aggregations;
-}

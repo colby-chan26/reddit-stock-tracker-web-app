@@ -1,10 +1,10 @@
-import { getTopMentionedTickers } from '@/actions/actions';
+import { getTopMentionedTickersAllTimeCached } from '@/actions/actions';
 import SymbolInfo from '@/components/trading-view/symbol-info';
 import SymbolOverview from '@/components/trading-view/symbol-overview';
 import React from 'react';
 
 const Leaderboards = async () => {
-  const topMentionedTickers = await getTopMentionedTickers();
+  const topMentionedTickers = await getTopMentionedTickersAllTimeCached();
 
   console.log(topMentionedTickers);
 
