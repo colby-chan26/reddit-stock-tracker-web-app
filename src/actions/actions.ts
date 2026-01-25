@@ -6,6 +6,5 @@ import { getTopMentionedTickers } from './leaderboards';
 export const getTopMentionedTickersAllTimeCached = unstable_cache(
   getTopMentionedTickers,
   ['leaderboards'],
-  { revalidate: 86400 },
+  { revalidate: 172800 },
 );
-

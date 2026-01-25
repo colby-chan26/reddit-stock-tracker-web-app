@@ -34,7 +34,7 @@ export default function Leaderboard({ stocks }: Props) {
           <CardHeader>
             <CardTitle>Reddit Stock Leaderboard</CardTitle>
             <CardDescription>
-              Based on my collected Reddit data, ranked by total post upvotes
+              Based on my collected Reddit data, ranked by sum of all post upvotes mentioning the stock
             </CardDescription>
           </CardHeader>
           <CardContent className='min-h-0 overflow-y-auto'>
@@ -74,7 +74,7 @@ export default function Leaderboard({ stocks }: Props) {
                     {stock.summary}
                     {stock.earliest_post && (
                       <div className='text-xs text-muted-foreground pt-3'>
-                        first collected post:{' '}
+                        First Collected Post:{' '}
                         {new Date(stock.earliest_post).toLocaleDateString()}
                       </div>
                     )}
