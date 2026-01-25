@@ -24,14 +24,15 @@ export const Header = () => {
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
+              <NavigationMenuLink className='rounded-full p-0' asChild>
                 <Link href='/'>
                   <Image
-                    src='/file.svg'
+                    className='rounded-full'
+                    src='/reddit_logo.png'
                     alt='logo'
                     priority
-                    width={25}
-                    height={25}
+                    width={35}
+                    height={35}
                   />
                 </Link>
               </NavigationMenuLink>
