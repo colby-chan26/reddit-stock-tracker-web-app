@@ -17,7 +17,7 @@ export async function getTopMentionedTickers(): Promise<LeaderboardStock[]> {
         score: 'desc',
       },
     },
-    take: 10,
+    take: 15,
   });
 
   // get general stock data for tickers
@@ -33,7 +33,7 @@ export async function getTopMentionedTickers(): Promise<LeaderboardStock[]> {
       score: _sum.score,
       earliest_post: _min.created_utc,
       ticker,
-      name: quote.price?.longName,
+      name: quote.price?.longName ?? quote.price?.shortName,
       country: quote.summaryProfile?.country,
       industry: quote.summaryProfile?.industry,
       sector: quote.summaryProfile?.sector,
@@ -42,6 +42,5 @@ export async function getTopMentionedTickers(): Promise<LeaderboardStock[]> {
     });
   }
 
-  console.log(stockData);
   return stockData;
 }

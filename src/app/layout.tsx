@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen flex flex-col`}
       >
         <ThemeProvider
           attribute='class'
@@ -36,7 +36,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <div className='grow flex flex-col'>{children}</div>
+          <div className='grow flex flex-col overflow-hidden'>{children}</div>
         </ThemeProvider>
       </body>
     </html>

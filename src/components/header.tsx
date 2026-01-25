@@ -20,7 +20,7 @@ const Separator = () => (
 export const Header = () => {
   return (
     <header className='bg-background sticky top-0 z-50 w-full'>
-      <div className='lg:px-40 md:px-20 sm:px-5 py-2.5 flex flex-row w-full'>
+      <div className='lg:px-10 md:px-20 sm:px-5 py-2.5 flex flex-row w-full'>
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
