@@ -36,7 +36,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <div className='grow flex flex-col overflow-hidden'>{children}</div>
+          <div className='grow flex flex-col overflow-hidden xl:px-10 px-0 '>
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

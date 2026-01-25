@@ -46,6 +46,14 @@ export const Header = () => {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href='/heatmap'>S&P500</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <NavigationMenuTrigger>Data</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className='grid w-50 gap-2'>

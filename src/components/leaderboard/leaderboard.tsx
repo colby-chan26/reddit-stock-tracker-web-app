@@ -28,7 +28,7 @@ export default function Leaderboard({ stocks }: Props) {
   const [selectedStock, setSelectedStock] = useState(stocks[0]);
 
   return (
-    <div className='grow flex flex-row font-sans xl:px-10 px-0 gap-2 overflow-hidden'>
+    <div className='grow flex flex-row font-sans gap-2 overflow-hidden'>
       <div className='w-[40%] h-full pb-5'>
         <Card className='w-full h-full'>
           <CardHeader>
