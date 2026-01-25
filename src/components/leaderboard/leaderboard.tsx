@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SymbolInfo from '@/components/trading-view/symbol-info';
 import SymbolOverview from '@/components/trading-view/symbol-overview';
+import { GlobeIcon, LinkIcon } from 'lucide-react';
 import type { LeaderboardStock } from '@/actions/types';
 import {
   Accordion,
@@ -17,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Badge } from '../ui/badge';
 
 type Props = {
   stocks: LeaderboardStock[];
@@ -32,7 +34,7 @@ export default function Leaderboard({ stocks }: Props) {
           <CardHeader>
             <CardTitle>Reddit Stock Leaderboard</CardTitle>
             <CardDescription>
-              Based on my collected Reddit data, ranked by total post score
+              Based on my collected Reddit data, ranked by total post upvotes
             </CardDescription>
           </CardHeader>
           <CardContent className='min-h-0 overflow-y-auto'>
@@ -51,7 +53,31 @@ export default function Leaderboard({ stocks }: Props) {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent>
+                    <div className='flex w-full flex-wrap gap-2 pb-3'>
+                      <Badge>{stock.industry}</Badge>
+                      <Badge variant='secondary'>{stock.sector}</Badge>
+                    </div>
+                    <div className='grid grid-cols-[auto_1fr] gap-2 pb-3'>
+                      <GlobeIcon />
+                      <div>
+                        {stock.city}, {stock.country}
+                      </div>
+                      <LinkIcon />
+                      <a
+                        className='text-primary hover:underline'
+                        href={stock.website}
+                        target='_blank'
+                      >
+                        {stock.website}
+                      </a>
+                    </div>
                     {stock.summary}
+                    {stock.earliest_post && (
+                      <div className='text-xs text-muted-foreground pt-3'>
+                        first collected post:{' '}
+                        {new Date(stock.earliest_post).toLocaleDateString()}
+                      </div>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
               ))}

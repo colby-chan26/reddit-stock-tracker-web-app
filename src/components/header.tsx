@@ -62,7 +62,10 @@ export const Header = () => {
           </NavigationMenuList>
         </NavigationMenu>
         <div className='grow flex justify-end items-center'>
-          <a target="_blank" href='https://github.com/colby-chan26/reddit-stock-tracker-web-app'>
+          <a
+            target='_blank'
+            href='https://github.com/colby-chan26/reddit-stock-tracker-web-app'
+          >
             <svg
               xmlns='http://www.w3.org/2000/svg'
               width='25'

@@ -1,3 +1,5 @@
+'use server'
+
 import prisma from '@/lib/prisma';
 import yahooFinance from './yahoo-finance';
 import type { LeaderboardStock } from './types';
@@ -29,11 +31,13 @@ export async function getTopMentionedTickers(): Promise<LeaderboardStock[]> {
     const quote = await yahooFinance.quoteSummary(ticker, {
       modules: ['summaryProfile', 'price'],
     });
+
     stockData.push({
       score: _sum.score,
       earliest_post: _min.created_utc,
       ticker,
       name: quote.price?.longName ?? quote.price?.shortName,
+      city: quote.summaryProfile?.city,
       country: quote.summaryProfile?.country,
       industry: quote.summaryProfile?.industry,
       sector: quote.summaryProfile?.sector,
