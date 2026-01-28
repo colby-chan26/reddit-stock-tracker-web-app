@@ -5,15 +5,18 @@ import prisma from '@/lib/prisma';
 
 const ENTRIES_PER_PAGE = 50;
 
-export async function getTickerInstancesAll(page: number): Promise<TickerInstance[]> {
+export async function getTickerInstancesAll(
+  page: number,
+): Promise<TickerInstance[]> {
+  const safePage = Math.max(1, page);
   const instances = await prisma.stocks.findMany({
-    skip: page * ENTRIES_PER_PAGE,
-    take: ENTRIES_PER_PAGE,
     orderBy: [
       {
         score: 'desc',
-      }
-    ]
+      },
+    ],
+    skip: (safePage - 1) * ENTRIES_PER_PAGE,
+    take: ENTRIES_PER_PAGE,
   });
 
   return instances.map((instance) => ({
