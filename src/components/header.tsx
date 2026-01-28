@@ -131,10 +131,10 @@ export const Header: React.FC = () => {
                 <ul className='grid w-50 gap-2'>
                   <li>
                     <NavigationMenuLink asChild>
-                      <Link href='#'>Weekly</Link>
+                      <Link href='/data/weekly'>Weekly</Link>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link href='#'>All Time</Link>
+                      <Link href='/data/all'>All Time</Link>
                     </NavigationMenuLink>
                   </li>
                 </ul>
