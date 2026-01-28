@@ -1,8 +1,8 @@
-'use server'
+'use server';
 
 import prisma from '@/lib/prisma';
 import yahooFinance from './yahoo-finance';
-import type { LeaderboardStock } from './types';
+import { LeaderboardStock } from '@/types';
 
 export async function getTopMentionedTickers(): Promise<LeaderboardStock[]> {
   // pull reddit specific data

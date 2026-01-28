@@ -1,5 +1,5 @@
 import { GlobeIcon, LinkIcon } from 'lucide-react';
-import type { LeaderboardStock } from '@/actions/types';
+import type { LeaderboardStock } from '@/types';
 import {
   AccordionContent,
   AccordionItem,

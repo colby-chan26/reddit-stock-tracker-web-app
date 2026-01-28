@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import SymbolInfo from '@/components/trading-view/symbol-info';
 import SymbolOverview from '@/components/trading-view/symbol-overview';
-import type { LeaderboardStock } from '@/actions/types';
+import type { LeaderboardStock } from '@/types';
 import { Accordion } from '@/components/ui/accordion';
 import {
   Card,
