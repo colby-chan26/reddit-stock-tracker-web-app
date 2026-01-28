@@ -9,6 +9,7 @@ datasource db {
 
 model stocks {
   id            Int              @id @default(autoincrement())
+  post_id       String?          @db.VarChar(30)
   submission_id String?          @db.VarChar(30)
   ticker        String?          @db.Char(5)
   author        String?          @db.VarChar(30)
