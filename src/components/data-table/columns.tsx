@@ -5,13 +5,14 @@ import { submission_type } from '@/generated/prisma/enums';
 import { ExternalLinkIcon } from 'lucide-react';
 import { TickerInstance } from '@/types';
 import { Button } from '../ui/button';
+import { SortableColumnHeader } from './sortable-column-header';
 
 const toActionsCell = ({ row }: CellContext<TickerInstance, unknown>) => {
-  const { type, postId, submissionId, subreddit } = row.original;
+  const { type, post_id, submission_id, subreddit } = row.original;
 
   const isPost = type === submission_type.POST;
-  const basePath = `https://www.reddit.com/r/${subreddit}/comments/${postId}`;
-  const link = isPost ? basePath : `${basePath}/comment/${submissionId}`;
+  const basePath = `https://www.reddit.com/r/${subreddit}/comments/${post_id}`;
+  const link = isPost ? basePath : `${basePath}/comment/${submission_id}`;
 
   return (
     <a href={link} target='_blank'>
@@ -25,11 +26,15 @@ const toActionsCell = ({ row }: CellContext<TickerInstance, unknown>) => {
 export const columns: ColumnDef<TickerInstance>[] = [
   {
     accessorKey: 'ticker',
-    header: 'Ticker',
+    header: ({ column }) => (
+      <SortableColumnHeader column={column} title='Ticker' className='ml-2' />
+    ),
   },
   {
     accessorKey: 'score',
-    header: 'Score',
+    header: ({ column }) => (
+      <SortableColumnHeader column={column} title='Score' />
+    ),
   },
   {
     accessorKey: 'author',
@@ -40,8 +45,11 @@ export const columns: ColumnDef<TickerInstance>[] = [
     header: 'Submission Type',
   },
   {
-    accessorFn: (rowData) => new Date(rowData.creationDate),
-    header: 'Date Created',
+    id: 'created_utc',
+    accessorFn: (rowData) => rowData.created_utc ? new Date(rowData.created_utc).toLocaleString() : '',
+    header: ({ column }) => (
+      <SortableColumnHeader column={column} title='Date Created' />
+    ),
   },
   {
     accessorKey: 'subreddit',

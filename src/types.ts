@@ -1,4 +1,4 @@
-import { submission_type } from "./generated/prisma/enums";
+import { stocks } from "./generated/prisma/client";
 
 export type LeaderboardStock = {
   score: number | null;
@@ -13,13 +13,4 @@ export type LeaderboardStock = {
   summary?: string;
 };
 
-export type TickerInstance = {
-  postId: string;
-  submissionId: string;
-  ticker: string;
-  author: string;
-  subreddit: string;
-  score: number;
-  type: submission_type;
-  creationDate: Date;
-};
+export type TickerInstance = Omit<stocks, 'id'>

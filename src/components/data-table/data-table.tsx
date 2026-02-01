@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
+  SortingState,
   useReactTable,
-} from "@tanstack/react-table"
+} from '@tanstack/react-table';
 
 import {
   Table,
@@ -14,40 +14,64 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from '@/components/ui/table';
+import { useEffect, useState } from 'react';
+import { getTickerInstancesAllCached } from '@/actions/actions';
+import { SortTickerParams } from '@/actions/data';
+import { TickerInstance } from '@/types';
+import { columns } from './columns';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-}
+export function DataTable() {
+  const [page, setPage] = useState<number>(1);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [data, setData] = useState<TickerInstance[]>([]);
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+  console.log(sorting);
+
+  useEffect(() => {
+    (async () => {
+      const sort = sorting.length ? sorting[0] : undefined;
+      const sortTickerParams = sort
+        ? ({ [sort.id]: sort.desc ? 'desc' : 'asc' } as SortTickerParams)
+        : undefined;
+      const responseData = await getTickerInstancesAllCached(
+        page,
+        sortTickerParams,
+      );
+      setData(responseData);
+    })();
+  }, [sorting, page]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+    onSortingChange: setSorting,
+    manualSorting: true,
+    state: {
+      sorting,
+    },
+  });
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className='overflow-hidden rounded-md border'>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={`${header.id}-${sorting.map((s) => `${s.id}-${s.desc}`).join(',')}`}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
-                )
+                );
               })}
             </TableRow>
           ))}
@@ -57,7 +81,7 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={row.getIsSelected() && 'selected'}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -68,7 +92,7 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className='h-24 text-center'>
                 No results.
               </TableCell>
             </TableRow>
@@ -76,5 +100,5 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
