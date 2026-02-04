@@ -2,18 +2,21 @@
 
 import { TickerInstance } from '@/types';
 import prisma from '@/lib/prisma';
-import { stocks, Prisma } from '@/generated/prisma/client';
+import { Prisma } from '@/generated/prisma/client';
 
 const ENTRIES_PER_PAGE = 50;
 
 export type SortTickerParams = Prisma.stocksOrderByWithRelationInput;
+export type FilterTickerParams = Prisma.stocksWhereInput;
 
 export async function getTickerInstancesAll(
   page: number,
-  sortBy: SortTickerParams | undefined,
+  sortBy?: SortTickerParams,
+  filterBy?: FilterTickerParams,
 ): Promise<TickerInstance[]> {
   const safePage = Math.max(1, page);
   const instances = await prisma.stocks.findMany({
+    where: filterBy,
     orderBy: sortBy ?? { score: 'desc' },
     skip: (safePage - 1) * ENTRIES_PER_PAGE,
     take: ENTRIES_PER_PAGE,

@@ -7,9 +7,5 @@ export default async function DemoPage({
 }) {
   const timeFrame = (await params).timeFrame;
 
-  return (
-    <div className='container mx-auto py-10 overflow-y-scroll'>
-      <DataTable />
-    </div>
-  );
+  return <DataTable />;
 }
