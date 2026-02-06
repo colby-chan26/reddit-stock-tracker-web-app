@@ -18,6 +18,21 @@ export const SEARCHABLE_COLUMN_OPTIONS = [
   },
 ];
 
+export const SUBMISSION_TYPE_OPTIONS = [
+  {
+    label: 'Post',
+    value: submission_type.POST,
+  },
+  {
+    label: 'Comment',
+    value: submission_type.COMMENT,
+  },
+  {
+    label: 'Reply',
+    value: submission_type.REPLY,
+  },
+]
+
 export const OPERATION_BY_COLUMN: Partial<Record<keyof TickerInstance, string>> = {
   ticker: 'startsWith',
   author: 'startsWith',

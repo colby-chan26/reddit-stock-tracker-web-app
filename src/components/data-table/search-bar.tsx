@@ -3,43 +3,54 @@
 import { useState } from 'react';
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { InputGroupDropdown } from './input-group-dropdown';
-import { SEARCHABLE_COLUMN_OPTIONS } from './columns';
+import { SEARCHABLE_COLUMN_OPTIONS, SUBMISSION_TYPE_OPTIONS } from './columns';
 import { Button } from '../ui/button';
+import { DataTableFacetedFilter } from './data-table-faceted-filter';
+import { submission_type } from '@/generated/prisma/enums';
 
 interface SearchBarProps {
   onSearch: (newFilterState: ColumnFiltersState) => void;
 }
 
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const [pendingFilters, setPendingFilter] = useState<ColumnFiltersState>([]);
-
-  const onChange = (id: string, value: string | undefined) => {
-    setPendingFilter((prev) => {
-      if (!value) {
-        return prev.filter((filter) => filter.id !== id);
-      }
-
-      const existingIndex = prev.findIndex((filter) => filter.id === id);
-      if (existingIndex >= 0) {
-        const updated = [...prev];
-        updated[existingIndex] = { id, value };
-        return updated;
-      }
-      return [...prev, { id, value }];
-    });
-  };
+  const [submissionTypes, setSubmissionTypes] = useState<
+    Partial<Record<submission_type, boolean>>
+  >({});
+  const [searchFilter, setSearchFilter] = useState({
+    key: SEARCHABLE_COLUMN_OPTIONS[0].value,
+    value: '',
+  });
 
   const handleSearch = () => {
-    onSearch(pendingFilters);
+    const filtersArray: ColumnFiltersState = searchFilter.value
+      ? [{ id: searchFilter.key, value: searchFilter.value }]
+      : [];
+    onSearch(filtersArray);
+  };
+
+  const handleReset = () => {
+    setSearchFilter({ key: SEARCHABLE_COLUMN_OPTIONS[0].value, value: '' });
+    setSubmissionTypes({})
+    onSearch([]);
   };
 
   return (
     <div className='flex flex-row items-center px-1 py-3'>
       <InputGroupDropdown
-        onChange={onChange}
+        onFilterChange={setSearchFilter}
         options={SEARCHABLE_COLUMN_OPTIONS}
+        filter={searchFilter}
       />
-      <Button onClick={() => handleSearch()}>Search</Button>
+      <DataTableFacetedFilter
+        selected={submissionTypes}
+        onSelectedChange={setSubmissionTypes}
+        options={SUBMISSION_TYPE_OPTIONS}
+        title='Submission'
+      />
+      <Button onClick={handleSearch}>Search</Button>
+      <Button variant='outline' onClick={handleReset}>
+        Reset
+      </Button>
     </div>
   );
 };

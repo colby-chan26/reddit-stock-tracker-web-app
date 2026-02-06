@@ -14,11 +14,12 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group';
 import { ChevronDownIcon } from 'lucide-react';
-import { ChangeEventHandler, useState } from 'react';
+import { ChangeEventHandler } from 'react';
 
 interface InputGroupDropdownProps {
-  onChange?: (id: string, value: string | undefined) => void;
+  onFilterChange?: (filter: { key: string; value: string }) => void;
   title?: string;
+  filter: { key: string; value: string };
   options: {
     label: string;
     value: string;
@@ -27,30 +28,27 @@ interface InputGroupDropdownProps {
 }
 
 export function InputGroupDropdown({
-  onChange,
+  onFilterChange,
   options,
+  filter,
 }: InputGroupDropdownProps) {
-  const [selectedColumnKey, setSelectedColumnKey] = useState<string>(
-    options[0].value,
-  );
-  const [inputValue, setInputValue] = useState('');
-
-  const handleChange: ChangeEventHandler<HTMLInputElement>  = (event) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const text = event.target.value;
-    setInputValue(text);
-    onChange?.(selectedColumnKey, text)
-  }
+    onFilterChange?.({ key: filter.key, value: text });
+  };
 
   const onSelectMenuItem = (value: string) => {
-    setInputValue('');
-    onChange?.(selectedColumnKey, undefined);
-    setSelectedColumnKey(value);
-  }
+    onFilterChange?.({ key: value, value: '' });
+  };
 
   return (
     <div className='w-full max-w-sm gap-4'>
       <InputGroup className='[--radius:1rem]'>
-        <InputGroupInput value={inputValue} onChange={handleChange} placeholder={`Search by ${selectedColumnKey}`} />
+        <InputGroupInput
+          value={filter.value}
+          onChange={handleChange}
+          placeholder={`Search by ${filter.key}`}
+        />
         <InputGroupAddon align='inline-end'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
