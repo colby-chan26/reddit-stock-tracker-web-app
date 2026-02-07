@@ -41,8 +41,14 @@ const GitHubIcon: React.FC = () => (
 );
 
 const InfoDialog: React.FC = () => {
+  const onOpenChange = (open: boolean) => {
+    if(!open) {
+      sessionStorage.setItem('visited', 'true');
+    }
+  }
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={onOpenChange} defaultOpen={sessionStorage.getItem('visited') ? false : true}>
       <DialogTrigger asChild>
         <InfoIcon width='25' height='25' className='cursor-pointer' />
       </DialogTrigger>
