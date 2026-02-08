@@ -3,10 +3,10 @@
 import {
   flexRender,
   getCoreRowModel,
+  ColumnFiltersState,
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-
 import {
   Table,
   TableBody,
@@ -17,30 +17,82 @@ import {
 } from '@/components/ui/table';
 import { useEffect, useState } from 'react';
 import { getTickerInstancesAllCached } from '@/actions/actions';
-import { SortTickerParams } from '@/actions/data';
+import { FilterTickerParams, SortTickerParams } from '@/actions/data';
 import { TickerInstance } from '@/types';
-import { columns } from './columns';
+import { columns, OPERATION_BY_COLUMN } from './columns';
+import { SearchBar } from '../leaderboard/search-bar';
+import { stocksWhereInput } from '@/generated/prisma/models';
 
-export function DataTable() {
+const constructSortParams = (sortState: SortingState) => {
+  const sort = sortState.length ? sortState[0] : undefined;
+  return sort
+    ? ({ [sort.id]: sort.desc ? 'desc' : 'asc' } as SortTickerParams)
+    : undefined;
+};
+
+const constructMultiFilter = (id: string, value: unknown[]) => {
+  const useInsensitive = id !== 'type';
+  return {
+    OR: value.map((v) => {
+      const operator =
+        OPERATION_BY_COLUMN[id as keyof TickerInstance] ?? 'equals';
+      return {
+        [id]: {
+          [operator]: v,
+          mode: useInsensitive ? 'insensitive' : undefined,
+        },
+      };
+    }),
+  };
+};
+
+const constructfilterParams = (
+  filterState: ColumnFiltersState,
+): FilterTickerParams => {
+  const filterParams: FilterTickerParams = {
+    AND: [],
+  };
+
+  for (const { id, value } of filterState) {
+    if (Array.isArray(value)) {
+      const filterOR = constructMultiFilter(id, value);
+      (filterParams.AND! as stocksWhereInput[]).push(filterOR);
+    } else {
+      const operator =
+        OPERATION_BY_COLUMN[id as keyof TickerInstance] ?? 'equals';
+        filterParams[id as keyof TickerInstance] = { [operator]: value, mode: 'insensitive' }
+    }
+  }
+
+  return filterParams;
+};
+
+interface DataTableProps {
+  subreddits: string[];
+}
+
+export function DataTable({ subreddits }: DataTableProps) {
   const [page, setPage] = useState<number>(1);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [data, setData] = useState<TickerInstance[]>([]);
-
-  console.log(sorting);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   useEffect(() => {
     (async () => {
-      const sort = sorting.length ? sorting[0] : undefined;
-      const sortTickerParams = sort
-        ? ({ [sort.id]: sort.desc ? 'desc' : 'asc' } as SortTickerParams)
-        : undefined;
+      const sortParams = constructSortParams(sorting);
+      const filterParams = constructfilterParams(columnFilters);
       const responseData = await getTickerInstancesAllCached(
         page,
-        sortTickerParams,
+        sortParams,
+        filterParams,
       );
       setData(responseData);
     })();
-  }, [sorting, page]);
+  }, [sorting, page, columnFilters]);
+
+  const onSearch = (newFilterState: ColumnFiltersState) => {
+    setColumnFilters(newFilterState);
+  };
 
   const table = useReactTable({
     data,
@@ -48,57 +100,69 @@ export function DataTable() {
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     manualSorting: true,
+    manualFiltering: true,
+    onColumnFiltersChange: setColumnFilters,
     state: {
       sorting,
+      columnFilters,
     },
   });
 
   return (
-    <div className='overflow-hidden rounded-md border'>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    key={`${header.id}-${sorting.map((s) => `${s.id}-${s.desc}`).join(',')}`}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+    <div className='flex flex-col grow overflow-hidden'>
+      <SearchBar onSearch={onSearch} subreddits={subreddits} />
+      <div className='grow overflow-x-hidden overflow-y-auto rounded-md border px-2 mb-3'>
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={`${header.id}-${sorting.map((s) => `${s.id}-${s.desc}`).join(',')}`}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className='h-24 text-center'>
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

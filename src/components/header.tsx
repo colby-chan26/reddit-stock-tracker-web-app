@@ -41,8 +41,29 @@ const GitHubIcon: React.FC = () => (
 );
 
 const InfoDialog: React.FC = () => {
+  const [open, setOpen] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+    if (!sessionStorage.getItem('visited')) {
+      setOpen(true);
+    }
+  }, []);
+
+  const onOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) {
+      sessionStorage.setItem('visited', 'true');
+    }
+  };
+
+  if (!mounted) {
+    return <InfoIcon width='25' height='25' className='cursor-pointer' />;
+  }
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <InfoIcon width='25' height='25' className='cursor-pointer' />
       </DialogTrigger>
@@ -57,8 +78,9 @@ const InfoDialog: React.FC = () => {
           <p className='text-sm text-muted-foreground leading-relaxed'>
             This web app displays insights into which stocks are trending across
             Reddit&apos;s investing communities. Browse the leaderboard to see
-            top mentioned tickers (based on collected data), explore the S&P 500 heatmap, and dive into
-            individual stock details with integrated TradingView charts.
+            top mentioned tickers (based on collected data), explore the S&P 500
+            heatmap, and dive into individual stock details with integrated
+            TradingView charts.
           </p>
 
           <p className='text-sm text-muted-foreground leading-relaxed'>

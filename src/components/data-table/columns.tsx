@@ -5,7 +5,40 @@ import { submission_type } from '@/generated/prisma/enums';
 import { ExternalLinkIcon } from 'lucide-react';
 import { TickerInstance } from '@/types';
 import { Button } from '../ui/button';
-import { SortableColumnHeader } from './sortable-column-header';
+import { SortableColumnHeader } from './components/sortable-column-header';
+
+export const SEARCHABLE_COLUMN_OPTIONS = [
+  {
+    label: 'Ticker',
+    value: 'ticker',
+  },
+  {
+    label: 'Author',
+    value: 'author',
+  },
+];
+
+export const SUBMISSION_TYPE_OPTIONS = [
+  {
+    label: 'Post',
+    value: submission_type.POST,
+  },
+  {
+    label: 'Comment',
+    value: submission_type.COMMENT,
+  },
+  {
+    label: 'Reply',
+    value: submission_type.REPLY,
+  },
+]
+
+export const OPERATION_BY_COLUMN: Partial<Record<keyof TickerInstance, string>> = {
+  ticker: 'startsWith',
+  author: 'startsWith',
+  type: 'equals',
+  subreddit: 'equals',
+};
 
 const toActionsCell = ({ row }: CellContext<TickerInstance, unknown>) => {
   const { type, post_id, submission_id, subreddit } = row.original;
@@ -46,7 +79,8 @@ export const columns: ColumnDef<TickerInstance>[] = [
   },
   {
     id: 'created_utc',
-    accessorFn: (rowData) => rowData.created_utc ? new Date(rowData.created_utc).toLocaleString() : '',
+    accessorFn: (rowData) =>
+      rowData.created_utc ? new Date(rowData.created_utc).toLocaleString() : '',
     header: ({ column }) => (
       <SortableColumnHeader column={column} title='Date Created' />
     ),
