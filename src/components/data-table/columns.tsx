@@ -5,7 +5,7 @@ import { submission_type } from '@/generated/prisma/enums';
 import { ExternalLinkIcon } from 'lucide-react';
 import { TickerInstance } from '@/types';
 import { Button } from '../ui/button';
-import { SortableColumnHeader } from './sortable-column-header';
+import { SortableColumnHeader } from './components/sortable-column-header';
 
 export const SEARCHABLE_COLUMN_OPTIONS = [
   {

@@ -52,24 +52,33 @@ export function DataTableFacetedFilter<T extends string = string>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant='outline' size='sm' className='h-8 border-dashed'>
+        <Button variant='outline' size='sm' className='[--radius:1rem] h-full border-dashed'>
           <PlusCircle />
           {title}
           {selectedCount > 0 && (
             <>
               <Separator orientation='vertical' className='mx-2 h-4' />
               <div className='hidden gap-1 lg:flex'>
-                {options
-                  .filter((option) => selected[option.value])
-                  .map((option) => (
-                    <Badge
-                      variant='secondary'
-                      key={option.value}
-                      className='rounded-sm px-1 font-normal'
-                    >
-                      {option.label}
-                    </Badge>
-                  ))}
+                {selectedCount > 2 ? (
+                  <Badge
+                    variant='secondary'
+                    className='rounded-sm px-1 font-normal'
+                  >
+                    {selectedCount} selected
+                  </Badge>
+                ) : (
+                  options
+                    .filter((option) => selected[option.value])
+                    .map((option) => (
+                      <Badge
+                        variant='secondary'
+                        key={option.value}
+                        className='rounded-sm px-1 font-normal'
+                      >
+                        {option.label}
+                      </Badge>
+                    ))
+                )}
               </div>
             </>
           )}
@@ -84,7 +93,7 @@ export function DataTableFacetedFilter<T extends string = string>({
                 const isSelected = !!selected[option.value];
                 return (
                   <CommandItem
-                    key={option.value}
+                    key={option.value + option.label + 'option'}
                     onSelect={() => handleSelect(option.value)}
                   >
                     <div

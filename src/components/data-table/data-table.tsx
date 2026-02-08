@@ -20,7 +20,8 @@ import { getTickerInstancesAllCached } from '@/actions/actions';
 import { FilterTickerParams, SortTickerParams } from '@/actions/data';
 import { TickerInstance } from '@/types';
 import { columns, OPERATION_BY_COLUMN } from './columns';
-import { SearchBar } from './search-bar';
+import { SearchBar } from '../leaderboard/search-bar';
+import { stocksWhereInput } from '@/generated/prisma/models';
 
 const constructSortParams = (sortState: SortingState) => {
   const sort = sortState.length ? sortState[0] : undefined;
@@ -29,19 +30,48 @@ const constructSortParams = (sortState: SortingState) => {
     : undefined;
 };
 
-const constructfilterParams = (filterState: ColumnFiltersState): FilterTickerParams => {
-  return filterState.reduce<Record<string, Record<string, unknown>>>(
-    (filterParams, { id, value }) => {
+const constructMultiFilter = (id: string, value: unknown[]) => {
+  const useInsensitive = id !== 'type';
+  return {
+    OR: value.map((v) => {
       const operator =
         OPERATION_BY_COLUMN[id as keyof TickerInstance] ?? 'equals';
-      filterParams[id] = { [operator]: value, mode: 'insensitive' };
-      return filterParams;
-    },
-    {},
-  );
+      return {
+        [id]: {
+          [operator]: v,
+          mode: useInsensitive ? 'insensitive' : undefined,
+        },
+      };
+    }),
+  };
 };
 
-export function DataTable() {
+const constructfilterParams = (
+  filterState: ColumnFiltersState,
+): FilterTickerParams => {
+  const filterParams: FilterTickerParams = {
+    AND: [],
+  };
+
+  for (const { id, value } of filterState) {
+    if (Array.isArray(value)) {
+      const filterOR = constructMultiFilter(id, value);
+      (filterParams.AND! as stocksWhereInput[]).push(filterOR);
+    } else {
+      const operator =
+        OPERATION_BY_COLUMN[id as keyof TickerInstance] ?? 'equals';
+        filterParams[id as keyof TickerInstance] = { [operator]: value, mode: 'insensitive' }
+    }
+  }
+
+  return filterParams;
+};
+
+interface DataTableProps {
+  subreddits: string[];
+}
+
+export function DataTable({ subreddits }: DataTableProps) {
   const [page, setPage] = useState<number>(1);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [data, setData] = useState<TickerInstance[]>([]);
@@ -51,8 +81,11 @@ export function DataTable() {
     (async () => {
       const sortParams = constructSortParams(sorting);
       const filterParams = constructfilterParams(columnFilters);
-      console.log(filterParams);
-      const responseData = await getTickerInstancesAllCached(page, sortParams, filterParams);
+      const responseData = await getTickerInstancesAllCached(
+        page,
+        sortParams,
+        filterParams,
+      );
       setData(responseData);
     })();
   }, [sorting, page, columnFilters]);
@@ -77,7 +110,7 @@ export function DataTable() {
 
   return (
     <div className='flex flex-col grow overflow-hidden'>
-      <SearchBar onSearch={onSearch} />
+      <SearchBar onSearch={onSearch} subreddits={subreddits} />
       <div className='grow overflow-x-hidden overflow-y-auto rounded-md border px-2 mb-3'>
         <Table>
           <TableHeader>
