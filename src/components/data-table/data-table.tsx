@@ -82,7 +82,7 @@ interface DataTableProps {
     page: number,
     sortBy?: SortTickerParams,
     filterBy?: FilterTickerParams,
-  ) => QueryReturn;
+  ) => Promise<QueryReturn>;
 }
 
 export function DataTable({ subreddits, fetchData }: DataTableProps) {
