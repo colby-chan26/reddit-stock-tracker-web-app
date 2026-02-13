@@ -16,12 +16,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useEffect, useState } from 'react';
-import { getTickerInstancesAllCached } from '@/actions/actions';
-import { FilterTickerParams, SortTickerParams } from '@/actions/data';
+import {
+  FilterTickerParams,
+  QueryReturn,
+  SortTickerParams,
+} from '@/actions/data';
 import { TickerInstance } from '@/types';
 import { columns, OPERATION_BY_COLUMN } from './columns';
 import { SearchBar } from '../leaderboard/search-bar';
 import { stocksWhereInput } from '@/generated/prisma/models';
+import { DataTablePagination } from './components/pagination';
+
+const PAGE_SIZE = 50;
 
 const constructSortParams = (sortState: SortingState) => {
   const sort = sortState.length ? sortState[0] : undefined;
@@ -60,7 +66,10 @@ const constructfilterParams = (
     } else {
       const operator =
         OPERATION_BY_COLUMN[id as keyof TickerInstance] ?? 'equals';
-        filterParams[id as keyof TickerInstance] = { [operator]: value, mode: 'insensitive' }
+      filterParams[id as keyof TickerInstance] = {
+        [operator]: value,
+        mode: 'insensitive',
+      };
     }
   }
 
@@ -69,26 +78,36 @@ const constructfilterParams = (
 
 interface DataTableProps {
   subreddits: string[];
+  fetchData: (
+    page: number,
+    sortBy?: SortTickerParams,
+    filterBy?: FilterTickerParams,
+  ) => QueryReturn;
 }
 
-export function DataTable({ subreddits }: DataTableProps) {
-  const [page, setPage] = useState<number>(1);
+export function DataTable({ subreddits, fetchData }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [data, setData] = useState<TickerInstance[]>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowCount, setRowCount] = useState<number>();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: PAGE_SIZE,
+  });
 
   useEffect(() => {
     (async () => {
       const sortParams = constructSortParams(sorting);
       const filterParams = constructfilterParams(columnFilters);
-      const responseData = await getTickerInstancesAllCached(
-        page,
+      const responseData = await fetchData(
+        pagination.pageIndex,
         sortParams,
         filterParams,
       );
-      setData(responseData);
+      setRowCount(responseData.count);
+      setData(responseData.data);
     })();
-  }, [sorting, page, columnFilters]);
+  }, [sorting, columnFilters, pagination, fetchData]);
 
   const onSearch = (newFilterState: ColumnFiltersState) => {
     setColumnFilters(newFilterState);
@@ -101,10 +120,14 @@ export function DataTable({ subreddits }: DataTableProps) {
     onSortingChange: setSorting,
     manualSorting: true,
     manualFiltering: true,
+    manualPagination: true,
     onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    rowCount,
     state: {
       sorting,
       columnFilters,
+      pagination,
     },
   });
 
@@ -162,6 +185,12 @@ export function DataTable({ subreddits }: DataTableProps) {
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className='mb-3'>
+        <DataTablePagination
+          key={data.toString() + pagination.pageIndex}
+          table={table}
+        />
       </div>
     </div>
   );
