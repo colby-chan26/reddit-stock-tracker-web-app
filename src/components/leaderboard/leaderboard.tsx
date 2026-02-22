@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SymbolInfo from '@/components/trading-view/symbol-info';
 import SymbolOverview from '@/components/trading-view/symbol-overview';
+import TradingViewCopyright from '@/components/trading-view/trading-view-copyright';
 import type { LeaderboardStock } from '@/types';
 import { Accordion } from '@/components/ui/accordion';
 import {
@@ -63,6 +64,10 @@ export default function Leaderboard({ stocks }: Props) {
             ]}
           />
         </div>
+        <TradingViewCopyright
+          href={`https://www.tradingview.com/symbols/${selectedStock.ticker.toUpperCase()}/`}
+          linkText={`${selectedStock.name ?? selectedStock.ticker} stock price`}
+        />
       </div>
     </div>
   );

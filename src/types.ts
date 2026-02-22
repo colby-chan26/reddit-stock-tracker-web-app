@@ -1,9 +1,10 @@
-import { stocks } from "./generated/prisma/client";
+import { stocks } from './generated/prisma/client';
 
 export type LeaderboardStock = {
   score: number | null;
   earliest_post: Date | null;
   ticker: string;
+  exchange?: string;
   name?: string | null;
   city?: string;
   country?: string;
@@ -13,4 +14,4 @@ export type LeaderboardStock = {
   summary?: string;
 };
 
-export type TickerInstance = Omit<stocks, 'id'>
+export type TickerInstance = Omit<stocks, 'id'>;

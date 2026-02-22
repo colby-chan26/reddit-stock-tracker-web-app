@@ -31,7 +31,7 @@ function SymbolInfo({ ticker, name }: SymbolInfoProps) {
     });
 
     currentContainer.prepend(script);
-    
+
     // Cleanup on unmount or when ticker/theme changes
     return () => {
       currentContainer.innerHTML = '';
@@ -39,21 +39,12 @@ function SymbolInfo({ ticker, name }: SymbolInfoProps) {
   }, [resolvedTheme, ticker]);
 
   return (
-    <>
-      <div className='tradingview-widget-container rounded-[3px] overflow-hidden' ref={container}>
-        <div className='tradingview-widget-container__widget'></div>
-      </div>
-      <div className='tradingview-widget-copyright'>
-        <a
-          href={`https://www.tradingview.com/symbols/${ticker.toUpperCase()}/`}
-          rel='noopener nofollow'
-          target='_blank'
-        >
-          <span className='blue-text'>{name} performance</span>
-        </a>
-        <span className='trademark'>&nbsp;by TradingView</span>
-      </div>
-    </>
+    <div
+      className='tradingview-widget-container rounded-[3px] overflow-hidden'
+      ref={container}
+    >
+      <div className='tradingview-widget-container__widget'></div>
+    </div>
   );
 }
 

@@ -12,37 +12,6 @@ interface TradingViewWidgetProps {
   symbols: TickerSymbol[];
 }
 
-// Generate copyright links dynamically
-const CopyrightLink = ({ symbols }: { symbols: TickerSymbol[] }) => {
-  return symbols.map((s, index) => {
-    const isLast = index === symbols.length - 1;
-    const isSecondToLast = index === symbols.length - 2;
-
-    return (
-      <span key={s.ticker}>
-        <a
-          href={`https://www.tradingview.com/symbols/${s.ticker.toUpperCase()}/`}
-          rel='noopener nofollow'
-          target='_blank'
-        >
-          <span className='blue-text'>
-            {isLast ? `${s.name} stock price` : s.name}
-          </span>
-        </a>
-        {!isLast && (
-          <>
-            {isSecondToLast ? (
-              <span className='and'>&nbsp;and&nbsp;</span>
-            ) : (
-              <span className='comma'>,&nbsp;</span>
-            )}
-          </>
-        )}
-      </span>
-    );
-  });
-};
-
 function SymbolOverview({ symbols }: TradingViewWidgetProps) {
   const container = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
@@ -122,14 +91,8 @@ function SymbolOverview({ symbols }: TradingViewWidgetProps) {
   }, [resolvedTheme, symbols]);
 
   return (
-    <div className='h-[calc(100%-40px)]'>
-      <div className='tradingview-widget-container' ref={container}>
-        <div className='tradingview-widget-container__widget' />
-      </div>
-      <div className='tradingview-widget-copyright'>
-        <CopyrightLink symbols={symbols} />
-        <span className='trademark'>&nbsp;by TradingView</span>
-      </div>
+    <div className='tradingview-widget-container h-full' ref={container}>
+      <div className='tradingview-widget-container__widget' />
     </div>
   );
 }

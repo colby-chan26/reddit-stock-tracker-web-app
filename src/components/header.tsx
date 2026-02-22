@@ -1,5 +1,13 @@
 'use client';
 
+import { useState, useSyncExternalStore } from 'react';
+const emptySubscribe = () => () => {};
+const useIsMounted = () =>
+  useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 import { InfoIcon } from 'lucide-react';
 import {
   NavigationMenu,
@@ -21,7 +29,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { ModeToggle } from './mode-toggle';
-import React from 'react';
+import { TickerSearch } from './ticker-Search';
 
 const Separator: React.FC = () => (
   <div className='inline-block mx-3 my-2 w-0.5 self-stretch bg-neutral-100 dark:bg-white/10' />
@@ -41,15 +49,12 @@ const GitHubIcon: React.FC = () => (
 );
 
 const InfoDialog: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-    if (!sessionStorage.getItem('visited')) {
-      setOpen(true);
-    }
-  }, []);
+  const mounted = useIsMounted();
+  const [open, setOpen] = useState(() =>
+    typeof sessionStorage !== 'undefined'
+      ? !sessionStorage.getItem('visited')
+      : false,
+  );
 
   const onOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
@@ -136,16 +141,23 @@ export const Header: React.FC = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href='/leaderboards'>Leaderboards</Link>
+                <Link href='/heatmap'>S&P500</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link href='/heatmap'>S&P500</Link>
-              </NavigationMenuLink>
+              <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className='grid w-50 gap-2'>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link href='/leaderboards/weekly'>Weekly</Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href='/leaderboards/all'>All Time</Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Data</NavigationMenuTrigger>
@@ -165,6 +177,8 @@ export const Header: React.FC = () => {
           </NavigationMenuList>
         </NavigationMenu>
         <div className='grow flex justify-end items-center'>
+          <TickerSearch />
+          <Separator />
           <a
             target='_blank'
             href='https://github.com/colby-chan26/reddit-stock-tracker-web-app'

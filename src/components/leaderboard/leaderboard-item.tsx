@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { GlobeIcon, LinkIcon } from 'lucide-react';
 import type { LeaderboardStock } from '@/types';
 import {
@@ -6,6 +7,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 
 type Props = {
   stock: LeaderboardStock;
@@ -18,6 +20,7 @@ export default function LeaderboardItem({ stock, index, onSelect }: Props) {
     name,
     ticker,
     score,
+    exchange,
     industry,
     sector,
     city,
@@ -28,6 +31,7 @@ export default function LeaderboardItem({ stock, index, onSelect }: Props) {
   } = stock;
 
   const location = city && country ? `${city}, ${country}` : city || country;
+  const tickerLink = `/ticker/${ticker.trim()}${exchange ? `?exchange=${exchange}` : ''}`;
 
   return (
     <AccordionItem key={name} value={ticker}>
@@ -73,6 +77,11 @@ export default function LeaderboardItem({ stock, index, onSelect }: Props) {
             First Collected Post: {new Date(earliest_post).toLocaleDateString()}
           </div>
         )}
+        <div className='pt-3'>
+          <Button asChild size='sm'>
+            <Link href={tickerLink}>View Details</Link>
+          </Button>
+        </div>
       </AccordionContent>
     </AccordionItem>
   );

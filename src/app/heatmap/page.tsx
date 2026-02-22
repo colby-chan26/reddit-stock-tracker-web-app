@@ -1,8 +1,19 @@
-import HeatMap from '@/components/trading-view/heat-map'
-import React from 'react'
+import HeatMap from '@/components/trading-view/heat-map';
+import TradingViewCopyright from '@/components/trading-view/trading-view-copyright';
+import React from 'react';
 
 export const HeatMapPage = () => {
-  return <HeatMap />
-}
+  return (
+    <div className='h-full flex flex-col'>
+      <div className='grow'>
+        <HeatMap />
+      </div>
+      <TradingViewCopyright
+        href='https://www.tradingview.com/heatmap/stock/'
+        linkText='Stock Heatmap'
+      />
+    </div>
+  );
+};
 
-export default HeatMapPage
+export default HeatMapPage;

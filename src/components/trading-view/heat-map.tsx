@@ -44,20 +44,11 @@ function HeatMap() {
   }, [resolvedTheme]);
 
   return (
-    <div className='h-[calc(100%-40px)]'>
-      <div className='tradingview-widget-container rounded-[3px] overflow-hidden' ref={container}>
-        <div className='tradingview-widget-container__widget' />
-      </div>
-       <div className='tradingview-widget-copyright'>
-          <a
-            href='https://www.tradingview.com/heatmap/stock/'
-            rel='noopener nofollow'
-            target='_blank'
-          >
-            <span className='blue-text'>Stock Heatmap</span>
-          </a>
-          <span className='trademark'>&nbsp;by TradingView</span>
-        </div>
+    <div
+      className='tradingview-widget-container rounded-[3px] overflow-hidden h-full'
+      ref={container}
+    >
+      <div className='tradingview-widget-container__widget' />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { TickerInstance } from '@/types';
 import prisma from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma/client';
+import { getWeeklyFilter, TimeFrame } from './utils';
 
 const ENTRIES_PER_PAGE = 50;
 
@@ -14,25 +15,8 @@ export type QueryReturn = {
   count: number;
 };
 
-const getWeeklyFilter = async (): Promise<Prisma.stocksWhereInput> => {
-  const latestEntry = await prisma.stocks.findFirst({
-    orderBy: { created_utc: 'desc' },
-    select: { created_utc: true },
-  });
-
-  if (!latestEntry?.created_utc) return {};
-
-  return {
-    created_utc: {
-      gte: new Date(
-        latestEntry.created_utc.getTime() - 7 * 24 * 60 * 60 * 1000,
-      ),
-    },
-  };
-};
-
 export async function getTickerInstancesAll(
-  timeFrame: 'weekly' | 'all',
+  timeFrame: TimeFrame,
   page: number,
   sortBy?: SortTickerParams,
   filterBy?: FilterTickerParams,
