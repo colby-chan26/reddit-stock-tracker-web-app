@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import { useEffect, useState } from 'react';
 import { getTickerInstancesAllCached } from '@/actions/actions';
-import { FilterTickerParams, SortTickerParams } from '@/actions/data';
+import type { FilterTickerParams, SortTickerParams } from '@/actions/data';
 import { TickerInstance } from '@/types';
 import { columns, OPERATION_BY_COLUMN } from './columns';
 import { SearchBar } from '../leaderboard/search-bar';

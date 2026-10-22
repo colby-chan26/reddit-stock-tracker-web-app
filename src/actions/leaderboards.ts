@@ -1,5 +1,3 @@
-'use server';
-
 import prisma from '@/lib/prisma';
 import yahooFinance from './yahoo-finance';
 import { LeaderboardStock } from '@/types';

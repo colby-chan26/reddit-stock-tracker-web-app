@@ -167,6 +167,7 @@ export const Header: React.FC = () => {
         <div className='grow flex justify-end items-center'>
           <a
             target='_blank'
+            rel='noopener noreferrer'
             href='https://github.com/colby-chan26/reddit-stock-tracker-web-app'
           >
             <GitHubIcon />

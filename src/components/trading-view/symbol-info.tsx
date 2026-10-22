@@ -46,7 +46,7 @@ function SymbolInfo({ ticker, name }: SymbolInfoProps) {
       <div className='tradingview-widget-copyright'>
         <a
           href={`https://www.tradingview.com/symbols/${ticker.toUpperCase()}/`}
-          rel='noopener nofollow'
+          rel='noopener noreferrer nofollow'
           target='_blank'
         >
           <span className='blue-text'>{name} performance</span>

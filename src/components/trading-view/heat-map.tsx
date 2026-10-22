@@ -51,7 +51,7 @@ function HeatMap() {
        <div className='tradingview-widget-copyright'>
           <a
             href='https://www.tradingview.com/heatmap/stock/'
-            rel='noopener nofollow'
+            rel='noopener noreferrer nofollow'
             target='_blank'
           >
             <span className='blue-text'>Stock Heatmap</span>

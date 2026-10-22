@@ -22,7 +22,7 @@ const CopyrightLink = ({ symbols }: { symbols: TickerSymbol[] }) => {
       <span key={s.ticker}>
         <a
           href={`https://www.tradingview.com/symbols/${s.ticker.toUpperCase()}/`}
-          rel='noopener nofollow'
+          rel='noopener noreferrer nofollow'
           target='_blank'
         >
           <span className='blue-text'>

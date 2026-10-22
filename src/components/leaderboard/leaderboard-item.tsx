@@ -28,6 +28,9 @@ export default function LeaderboardItem({ stock, index, onSelect }: Props) {
   } = stock;
 
   const location = city && country ? `${city}, ${country}` : city || country;
+  // website comes from a third-party API, only allow http(s) links
+  const safeWebsite =
+    website && /^https?:\/\//i.test(website) ? website : undefined;
 
   return (
     <AccordionItem key={name} value={ticker}>
@@ -54,15 +57,16 @@ export default function LeaderboardItem({ stock, index, onSelect }: Props) {
               <div>{location}</div>
             </>
           )}
-          {website && (
+          {safeWebsite && (
             <>
               <LinkIcon />
               <a
                 className='text-primary hover:underline'
-                href={website}
+                href={safeWebsite}
                 target='_blank'
+                rel='noopener noreferrer'
               >
-                {website}
+                {safeWebsite}
               </a>
             </>
           )}

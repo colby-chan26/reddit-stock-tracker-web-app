@@ -48,7 +48,7 @@ const toActionsCell = ({ row }: CellContext<TickerInstance, unknown>) => {
   const link = isPost ? basePath : `${basePath}/comment/${submission_id}`;
 
   return (
-    <a href={link} target='_blank'>
+    <a href={link} target='_blank' rel='noopener noreferrer'>
       <Button variant='ghost'>
         <ExternalLinkIcon />
       </Button>
